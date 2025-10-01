@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-HR Leave Request Analyzer</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<style>
+    /* Animated gradient background */
+    body {
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background: linear-gradient(-45deg, #667eea, #764ba2, #ff7e5f, #feb47b);
+        background-size: 400% 400%;
+        animation: gradientBG 15s ease infinite;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    @keyframes gradientBG {
+        0% {background-position: 0% 50%;}
+        50% {background-position: 100% 50%;}
+        100% {background-position: 0% 50%;}
+    }
+
+    .container {
+        background: rgba(255,255,255,0.95);
+        padding: 30px;
+        border-radius: 15px;
+        max-width: 900px;
+        width: 90%;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        animation: slideUp 1s ease-out;
+    }
+
+    header h1 {
+        font-size: 3rem;
+        color: #333;
+        margin-bottom: 10px;
+        text-align: center;
+        animation: scaleIn 1s ease-in-out;
+    }
+
+    header p.subtitle {
+        text-align: center;
+        font-size: 1.2rem;
+        color: #555;
+        opacity: 0;
+        animation: fadeInText 1.5s forwards;
+    }
+
+    .form-section h2 {
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+    .form-container {
+        margin-top: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 10px 15px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 8px rgba(102,126,234,0.2);
+    }
+
+    .form-row {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    textarea {
+        resize: none;
+    }
+
+    .char-count {
+        font-size: 0.85rem;
+        color: #999;
+        margin-top: 5px;
+        text-align: right;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: #667eea;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #5a67d8;
+    }
+
+    .btn-secondary {
+        background: #e2e8f0;
+        color: #333;
+    }
+
+    .btn-secondary:hover {
+        background: #cbd5e1;
+    }
+
+    footer {
+        text-align: center;
+        margin-top: 40px;
+        font-size: 0.9rem;
+        color: #999;
+    }
+
+    /* Animations */
+    @keyframes slideUp {
+        from {opacity: 0; transform: translateY(30px);}
+        to {opacity: 1; transform: translateY(0);}
+    }
+
+    @keyframes scaleIn {
+        from {transform: scale(0.8); opacity: 0;}
+        to {transform: scale(1); opacity: 1;}
+    }
+
+    @keyframes fadeInText {
+        from {opacity: 0; transform: translateY(10px);}
+        to {opacity: 1; transform: translateY(0);}
+    }
+
+    @media(max-width: 600px) {
+        .form-row {
+            flex-direction: column;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>🏢 AI-HR Leave Request System</h1>
+        <p class="subtitle">Submit your leave request for automated analysis</p>
+    </header>
+
+    <div class="form-container">
+        <form action="/submit" method="POST" id="leaveForm">
+            <div class="form-section">
+                <h2>Employee Information</h2>
+                <div class="form-group">
+                    <label for="employee_name">Full Name *</label>
+                    <input type="text" id="employee_name" name="employee_name" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="employee_id">Employee ID *</label>
+                        <input type="text" id="employee_id" name="employee_id" placeholder="EMP-001" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="department">Department *</label>
+                        <select id="department" name="department" required>
+                            <option value="">Select Department</option>
+                            <option value="IT Support">IT Support</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Human Resources">Human Resources</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Sales">Sales</option>
+                            <option value="Operations">Operations</option>
+                            <option value="Customer Service">Customer Service</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Leave Details</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="start_date">Start Date *</label>
+                        <input type="date" id="start_date" name="start_date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="end_date">End Date *</label>
+                        <input type="date" id="end_date" name="end_date" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reason">Reason for Leave *</label>
+                    <textarea id="reason" name="reason" rows="4" placeholder="Provide a detailed reason..." required></textarea>
+                    <span class="char-count" id="charCount">0 characters</span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Submit Request</button>
+                <button type="reset" class="btn-secondary">Clear Form</button>
+            </div>
+        </form>
+    </div>
+
+    <footer>
+        <p>© 2025 AI-HR Leave Request Analyzer | Automated Decision System</p>
+    </footer>
+</div>
+
+<script>
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('start_date').setAttribute('min', today);
+    document.getElementById('end_date').setAttribute('min', today);
+
+    document.getElementById('start_date').addEventListener('change', function() {
+        document.getElementById('end_date').setAttribute('min', this.value);
+    });
+
+    const reasonTextarea = document.getElementById('reason');
+    const charCount = document.getElementById('charCount');
+    reasonTextarea.addEventListener('input', function() {
+        charCount.textContent = this.value.length + ' characters';
+    });
+
+    document.getElementById('leaveForm').addEventListener('submit', function(e) {
+        const startDate = new Date(document.getElementById('start_date').value);
+        const endDate = new Date(document.getElementById('end_date').value);
+        if (endDate < startDate) {
+            e.preventDefault();
+            alert('End date cannot be before start date!');
+        }
+    });
+</script>
+</body>
+</html>

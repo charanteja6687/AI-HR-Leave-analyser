@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - Leave Request System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏢 HR Leave Request System</h1>
+            <p class="subtitle">Error Processing Request</p>
+        </header>
+
+        <div class="result-container">
+            <div class="status-card status-flagged">
+                <div class="status-icon">❌</div>
+                <h2 class="status-text">Error</h2>
+            </div>
+
+            <div class="details-card">
+                <h3>An Error Occurred</h3>
+                <div class="warning-message">
+                    <p>{{ message }}</p>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="/" class="btn-primary">Go Back to Form</a>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2025 AI-HR Leave Request Analyzer | Automated Decision System</p>
+        </footer>
+    </div>
+</body>
+</html>

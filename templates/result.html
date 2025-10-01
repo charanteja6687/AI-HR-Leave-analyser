@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Request Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏢 HR Leave Request System</h1>
+            <p class="subtitle">Request Analysis Results</p>
+        </header>
+
+        <div class="result-container">
+            <div class="employee-info">
+                <h3>{{ employee_name }} ({{ employee_id }})</h3>
+                {% if is_new_employee %}
+                    <p style="color: #667eea; font-weight: bold;">🆕 New Employee - First Request in System</p>
+                {% else %}
+                    <p>Existing Employee - {{ previous_leaves_count }} leave(s) taken this month</p>
+                {% endif %}
+            </div>
+
+            <div class="status-card {% if result.status == 'Approved' %}status-approved{% else %}status-flagged{% endif %}">
+                <div class="status-icon">
+                    {% if result.status == 'Approved' %}
+                        ✅
+                    {% else %}
+                        ⚠️
+                    {% endif %}
+                </div>
+                <h2 class="status-text">{{ result.status }}</h2>
+                <p class="duration-text">Duration: {{ result.duration }} day{% if result.duration != 1 %}s{% endif %}</p>
+                <p class="duration-text">{{ result.start_day }} to {{ result.end_day }}</p>
+            </div>
+
+            <div class="details-card">
+                <h3>📋 Analysis Details</h3>
+                
+                {% if result.status == 'Approved' %}
+                    <div class="success-message">
+                        <p><strong>✓ Your leave request has been automatically approved!</strong></p>
+                        <p>All policy validations passed successfully:</p>
+                        <ul class="reason-list">
+                            {% for reason in result.reasons %}
+                                <li>{{ reason }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% else %}
+                    <div class="warning-message">
+                        <p><strong>⚠ Your leave request has been flagged for manager review</strong></p>
+                        <p>The following policy violations were detected:</p>
+                        <ul class="reason-list">
+                            {% for reason in result.reasons %}
+                                <li>{{ reason }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% if result.rules_triggered %}
+                            <p class="note"><strong>Rules Triggered:</strong> 
+                                {% for rule in result.rules_triggered %}
+                                    Rule {{ rule }}{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </p>
+                        {% endif %}
+                        <p class="note"><strong>Important:</strong> This is not an automatic rejection. Your request will be reviewed by your direct manager for final approval.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="next-steps">
+                <h3>📌 What Happens Next?</h3>
+                {% if result.status == 'Approved' %}
+                    <p>✓ Your leave has been automatically approved and recorded in the system</p>
+                    <p>✓ You will receive a confirmation email within 24 hours</p>
+                    <p>✓ Please update your calendar and inform your immediate team</p>
+                    <p>✓ Ensure all handover documentation is completed before your leave</p>
+                {% else %}
+                    <p>→ Your request has been forwarded to your manager for review</p>
+                    <p>→ You will receive an email notification once a decision is made</p>
+                    <p>→ Expected response time: 24-48 business hours</p>
+                    <p>→ Your manager may contact you for additional information</p>
+                {% endif %}
+            </div>
+
+            {% if is_new_employee %}
+            <div class="next-steps" style="background: #e3f2fd;">
+                <h3>👋 Welcome to the System!</h3>
+                <p>This is your first leave request in our system. Here are some tips:</p>
+                <p>• All requests are recorded and tracked automatically</p>
+                <p>• You can view system statistics at <a href="/stats" style="color: #667eea;">/stats</a></p>
+                <p>• Keep reasons detailed and professional</p>
+                <p>• Plan leaves in advance when possible</p>
+            </div>
+            {% endif %}
+
+            <div class="form-actions">
+                <a href="/" class="btn-primary">Submit Another Request</a>
+                <a href="/stats" class="btn-secondary">View Statistics</a>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2025 AI-HR Leave Request Analyzer | Automated Decision System</p>
+        </footer>
+    </div>
+</body>
+</html>
